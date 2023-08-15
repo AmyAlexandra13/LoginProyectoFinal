@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'Pages/login_page.dart';
+import 'package:login/Pages/auth_page.dart';
+//import 'Pages/login_page.dart';
 import 'firebase_options.dart';
 
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(),
-      home: const LoginPage(),
+      home: const AuthPage(),
      //  home: const LoginPage(),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,8 +11,43 @@ class LoginPage extends StatefulWidget {
   class _LoginPageState extends State<LoginPage>{ 
    
     final _formKey = GlobalKey<FormState>();
+    bool isLoading = false;
     final TextEditingController _email = TextEditingController();
         final TextEditingController _password = TextEditingController();
+
+        signInWithEmailAndPassword() async{
+          try {
+            setState((){
+              isLoading = true;
+            });
+  await FirebaseAuth.instance.signInWithEmailAndPassword(
+    email: _email.text,
+    password: _password.text,
+  );
+   setState((){
+              isLoading = false;
+            });
+} on FirebaseAuthException catch (e) {
+   setState((){
+              isLoading = false;
+            });
+  if (e.code == 'user-not-found') {
+     return ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Usuario no encontrado"),
+      ),
+     );
+
+
+  } else if (e.code == 'wrong-password') {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Contraseña incorrecta"),
+      ),
+    );
+  }
+}
+        }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +64,7 @@ class LoginPage extends StatefulWidget {
                 controller: _email,
                 validator: (text){
                   if(text == null || text.isEmpty){
-                    return 'Email is empty';
+                    return 'Email esta vacio';
                   }
                   return null;
                 },
@@ -38,7 +74,7 @@ class LoginPage extends StatefulWidget {
                 controller: _password,
                 validator: (text){
                   if(text == null || text.isEmpty){
-                    return 'Password is empty';
+                    return 'Password esta vacia';
                   }
                   return null;
                 },
@@ -53,10 +89,14 @@ class LoginPage extends StatefulWidget {
                 child: ElevatedButton(
                   onPressed: (){
                     if (_formKey.currentState!.validate()) {
-                      print("Validation is done");
+                     signInWithEmailAndPassword();
                     }
                   },
-                  child: const Text("Login"),
+                  child: isLoading ? Center(child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                   ) 
+                 : const Text("Login"),
                 ),
               ),
 

@@ -18,7 +18,7 @@ class AuthPage extends StatelessWidget{
             return const CircularProgressIndicator();
           }else{
             if(snapshot.hasData){
-              return  HomePage();
+              return  const HomePage();
             }else{
               return const LoginPage();
             }
